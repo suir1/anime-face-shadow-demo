@@ -643,10 +643,9 @@ footer.site-footer {
         </div>
         <figcaption class="plate-foot">
           <div class="plate-metrics">
-            <span class="badge">Ignores elevation</span>
             <span id="sph-b1-split" class="badge bad">Splits near 80°</span>
+            <span class="badge">Ignores elevation</span>
           </div>
-          <div>Single baked threshold; split angle is locked.</div>
         </figcaption>
       </figure>
 
@@ -660,10 +659,8 @@ footer.site-footer {
         </div>
         <figcaption class="plate-foot">
           <div class="plate-metrics">
-            <span class="badge">Unwarped interpolation</span>
             <span id="sph-b2-split" class="badge warn">Splits near 74°</span>
           </div>
-          <div>Blends 5&times;3 masks directly, but split angle drifts.</div>
         </figcaption>
       </figure>
 
@@ -677,10 +674,9 @@ footer.site-footer {
         </div>
         <figcaption class="plate-foot">
           <div class="plate-metrics">
-            <span class="badge ok">Editable split curve</span>
             <span id="sph-eg-split" class="badge ok">Splits at 67.5°</span>
+            <span class="badge ok">No repainting</span>
           </div>
-          <div>Phase-warped to match the curve without repainting.</div>
         </figcaption>
       </figure>
     </div>
@@ -689,7 +685,7 @@ footer.site-footer {
   <!-- SECTION 2: SINGLE-LAYER BOTTLENECK -> MASTER'S MOTIVATION -->
   <section id="sec-bottleneck" class="demo-section">
     <div class="sec-head">
-      <h2>2. Single-layer ceiling: 1-layer vs. 2-layer and a 19-key reference</h2>
+      <h2>2. Single-layer ceiling vs. two layers and a 19-key reference</h2>
       <p class="lead">
         Fixed elevation (ψ = 0°). The first two panels use phase-warped 5-key SDFs with 2 outer cheek pins (merged vs. pre-split procedural nose and cheek layers), while the third uses 19 threshold keys (every 10°). Scrub θ across 68° to compare.
       </p>
@@ -718,7 +714,6 @@ footer.site-footer {
         <figure class="portrait-plate">
           <div class="plate-top">
             <span class="plate-title">1-layer warped (5 keys)</span>
-            <span id="s2-1l-status" class="badge warn">Split</span>
           </div>
           <div class="plate-media">
             <canvas id="canvas-s2-1l" width="320" height="320"></canvas>
@@ -731,7 +726,6 @@ footer.site-footer {
         <figure class="portrait-plate highlight-ok">
           <div class="plate-top">
             <span class="plate-title">2-layer warped (5 keys)</span>
-            <span id="s2-2l-status" class="badge ok">Split</span>
           </div>
           <div class="plate-media">
             <canvas id="canvas-s2-2l" width="320" height="320"></canvas>
@@ -744,7 +738,6 @@ footer.site-footer {
         <figure class="portrait-plate">
           <div class="plate-top">
             <span class="plate-title">Dense ref (19 keys)</span>
-            <span id="s2-dense19-status" class="badge accent">Split</span>
           </div>
           <div class="plate-media">
             <canvas id="canvas-s2-dense19" width="320" height="320"></canvas>
@@ -775,7 +768,7 @@ footer.site-footer {
           </div>
           <div>
             <strong>Next step:</strong>
-            At 70°, the two-layer version preserves the sharp nose tip. Recovering those hidden inner edges from hand-drawn merged keyframes, along with editable sharp/soft joins and head-turn adaptation, is the focus of my M.S. plan.
+            Recovering those hidden inner edges from hand-drawn merged keyframes, along with editable sharp/soft joins and head-turn adaptation, is the focus of my M.S. plan.
           </div>
         </div>
       </div>
@@ -831,9 +824,6 @@ footer.site-footer {
       <div id="tps-hover-readout" class="subnote" style="margin-top:8px;">
         Hover any landmark dot to inspect how Shino's face UV maps onto the Mage.
       </div>
-      <p class="subnote" style="margin-top:6px;line-height:1.55;color:var(--ink-soft);">
-        Raw <code>N&middot;L</code> leaves Mage's flatter face mostly dark, direct UV copy lands on the mouth, and TPS + threshold still splits late.
-      </p>
     </div>
   </section>
 
@@ -1782,24 +1772,6 @@ window.__DEMO_BIN_B64__ = "H4sIADVJB2sC/xTWY5idVxsG0PmatLHNKjba2EkbYyZ229i2bczEt
     renderShinoCanvas("canvas-s2-1l", bufS2_1l, th, "cel", true);
     renderShinoCanvas("canvas-s2-2l", bufS2_2l, th, "cel", true);
     renderShinoCanvas("canvas-s2-dense19", bufS2_Dense19, th, "cel", true);
-
-    const setS2Badge = (id, phi, splitCls) => {
-      const el = document.getElementById(id);
-      const b0 = countShadowRegions(phi, RT.topoRoi);
-      if (b0 >= 2) {
-        el.textContent = "Split";
-        el.className = `badge ${splitCls}`;
-      } else if (b0 === 0) {
-        el.textContent = "Lit";
-        el.className = "badge";
-      } else {
-        el.textContent = th < 90 ? "Merged" : "Cheek only";
-        el.className = "badge";
-      }
-    };
-    setS2Badge("s2-1l-status", bufS2_1l, "warn");
-    setS2Badge("s2-2l-status", bufS2_2l, "ok");
-    setS2Badge("s2-dense19-status", bufS2_Dense19, "accent");
   }
 
   // -------------------------------------------------------------------------
@@ -1813,7 +1785,7 @@ window.__DEMO_BIN_B64__ = "H4sIADVJB2sC/xTWY5idVxsG0PmatLHNKjba2EkbYyZ229i2bczEt
     });
 
     const cards = [
-      { key: `mage_b0_th${th}`, title: "Raw 3D N·L", badge: "mostly dark", cls: "bad", foot: "Raw surface normals fail" },
+      { key: `mage_b0_th${th}`, title: "Raw 3D N·L", badge: "mostly dark", cls: "bad", foot: "No UV shadow masks" },
       { key: `mage_naive_th${th}`, title: "Direct UV copy", badge: "mouth drift", cls: "bad", foot: "12-angle mean: ~47 px" },
       { key: `mage_tps_b1_th${th}`, title: "TPS + threshold", badge: "splits late", cls: "warn", foot: "12-angle mean: ~40 px" },
       { key: `mage_ours_tps_th${th}`, title: "TPS + warped SDF", badge: "68° split", cls: "ok", foot: "12-angle mean: ~16 px", hi: true },
